@@ -18,9 +18,12 @@ interface PacienteDao {
         AND email = :email
         """)
 
-    suspend fun autentica(
-        nome: String,
-        senha: String,
-        email: String
-    ): Paciente?
+    suspend fun autentica(nome: String, senha: String, email: String): Paciente?
+
+    @Query("SELECT * FROM Paciente WHERE id = :id")
+    fun buscaPorId(id: Long): Paciente?
+
+    @Query("SELECT * FROM Paciente WHERE email = :email")
+    suspend fun buscaPorEmail(email: String): Paciente?
+
 }

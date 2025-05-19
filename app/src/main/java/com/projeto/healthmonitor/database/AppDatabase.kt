@@ -20,11 +20,14 @@ abstract class AppDatabase : RoomDatabase() {
         private var instancia: AppDatabase? = null
 
         fun instancia(context: Context): AppDatabase {
-            return instancia ?: Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java,
-                "healthmonitor.db"
-            ).build().also { instancia = it }
+            return instancia ?: synchronized(this) {
+                instancia ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "healthmonitor.db"
+                ).fallbackToDestructiveMigration()
+                    .build().also { instancia = it }
+            }
         }
     }
 }

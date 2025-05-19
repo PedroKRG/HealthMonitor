@@ -7,4 +7,59 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.TelaPacienteActivity">
 
+
+
+    <TextView
+        android:id="@+id/tvBoasVindas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Olá, paciente!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Email: "
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tvBoasVindas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tvIdade"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Idade: "
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tvEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnVerHistorico"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Ver Histórico"
+        app:layout_constraintTop_toBottomOf="@id/tvIdade"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <Button
+        android:id="@+id/btnSair"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sair"
+        app:layout_constraintTop_toBottomOf="@id/btnVerHistorico"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
