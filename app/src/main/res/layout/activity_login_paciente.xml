@@ -5,19 +5,42 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.LoginActivity">
+    tools:context=".ui.activity.LoginPacienteActivity"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/textTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login Paciente"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp" />
+
+    <EditText
+        android:id="@+id/activity_login_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@id/textTitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
 
     <EditText
         android:id="@+id/activity_login_nome"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Nome"
-        android:inputType="text"
-        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@id/activity_login_email"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="100dp"
-        android:layout_marginHorizontal="32dp"/>
+        android:layout_marginTop="16dp" />
 
     <EditText
         android:id="@+id/activity_login_senha"
@@ -28,8 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/activity_login_nome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="32dp"/>
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/activity_login_botao_entrar"
@@ -39,6 +61,5 @@
         app:layout_constraintTop_toBottomOf="@id/activity_login_senha"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
+        android:layout_marginTop="24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
