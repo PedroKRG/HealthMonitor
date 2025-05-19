@@ -5,16 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialDatePicker.*
-import com.projeto.healthmonitor.R
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityCadastroMedicoBinding
 import com.projeto.healthmonitor.model.Medico
@@ -22,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import at.favre.lib.crypto.bcrypt.BCrypt
 
 class CadastroMedicoActivity : AppCompatActivity() {
 
@@ -80,16 +74,18 @@ class CadastroMedicoActivity : AppCompatActivity() {
             return
         }
 
-
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Formato de e-mail inválido", Toast.LENGTH_SHORT).show()
             return
         }
 
+
+        val senhaCriptografada = BCrypt.withDefaults().hashToString(12, senha.toCharArray())
+
         val novoMedico = Medico(
             nome = nome,
             email = email,
-            senha = senha,
+            senha = senhaCriptografada,
             crm = crm,
             especialidade = especialidade,
             dataNascimento = nascimento.toString()

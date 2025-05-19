@@ -4,18 +4,15 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.projeto.healthmonitor.R
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityCadastroPacienteBinding
 import com.projeto.healthmonitor.model.Paciente
 import kotlinx.coroutines.launch
+import at.favre.lib.crypto.bcrypt.BCrypt
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -74,30 +71,31 @@ class CadastroPacienteActivity : AppCompatActivity() {
             return
         }
 
-
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Formato de e-mail inválido", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val novoPaciente = Paciente(
-            nome = nome,
-            email = email,
-            senha = senha,
-            dataNascimento = nascimento.toString()
-        )
-
         lifecycleScope.launch {
-
             val existente = pacienteDao.buscaPorEmail(email)
             if (existente != null) {
                 Toast.makeText(this@CadastroPacienteActivity, "Email já cadastrado", Toast.LENGTH_SHORT).show()
                 return@launch
             }
 
+
+            val senhaCriptografada = at.favre.lib.crypto.bcrypt.BCrypt.withDefaults()
+                .hashToString(12, senha.toCharArray())
+
+            val novoPaciente = Paciente(
+                nome = nome,
+                email = email,
+                senha = senhaCriptografada,
+                dataNascimento = nascimento.toString()
+            )
+
             pacienteDao.salva(novoPaciente)
             Toast.makeText(this@CadastroPacienteActivity, "Cadastro realizado!", Toast.LENGTH_SHORT).show()
-
 
             val intent = Intent(this@CadastroPacienteActivity, LoginPacienteActivity::class.java)
             startActivity(intent)

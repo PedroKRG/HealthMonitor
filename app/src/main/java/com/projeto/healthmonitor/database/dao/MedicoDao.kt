@@ -19,6 +19,9 @@ interface MedicoDao {
     @Query("SELECT * FROM Medico WHERE id = :id")
     suspend fun buscaPorId(id: Long): Medico?
 
-    @Query("SELECT * FROM medico WHERE email = :email")
+    @Query("SELECT * FROM Medico WHERE email = :email")
     suspend fun buscaPorEmail(email: String): Medico?
+
+    @Query("SELECT * FROM Medico WHERE email = :email AND nome = :nome")
+    suspend fun buscaPorEmailENome(email: String, nome: String): Paciente?
 }
