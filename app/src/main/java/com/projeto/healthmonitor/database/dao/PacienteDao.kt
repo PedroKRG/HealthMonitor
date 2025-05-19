@@ -26,4 +26,7 @@ interface PacienteDao {
     @Query("SELECT * FROM Paciente WHERE email = :email")
     suspend fun buscaPorEmail(email: String): Paciente?
 
+    @Query("SELECT * FROM Paciente WHERE email = :email AND nome = :nome")
+    suspend fun buscaPorEmailEnome(email: String, nome: String): Paciente?
+
 }

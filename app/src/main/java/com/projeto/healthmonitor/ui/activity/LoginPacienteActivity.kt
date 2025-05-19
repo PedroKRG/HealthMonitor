@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityLoginPacienteBinding
 import com.projeto.healthmonitor.extensions.vaiPara
@@ -44,7 +45,6 @@ class LoginPacienteActivity : AppCompatActivity() {
         }
     }
 
-
     private fun configuraBotaoEntrar() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
             val nome = binding.activityLoginPacienteNome.text.toString().trim()
@@ -66,32 +66,49 @@ class LoginPacienteActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 binding.activityLoginBotaoEntrar.isEnabled = false
                 try {
-                    val usuarioAutenticado = pacienteDao.autentica(nome, senha, email)
+                    val usuario = pacienteDao.buscaPorEmailEnome(email, nome)
 
-                    if (usuarioAutenticado != null) {
-                        Log.i("LoginPaciente", "Usuário autenticado com sucesso: ID ${usuarioAutenticado.id}")
+                    if (usuario != null) {
+                        val resultado = BCrypt.verifyer().verify(
+                            senha.toCharArray(),
+                            usuario.senha
+                        )
 
+                        if (resultado.verified) {
+                            Log.i(
+                                "LoginPaciente",
+                                "Usuário autenticado com sucesso: ID ${usuario.id}"
+                            )
 
-                        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-                        with(sharedPref.edit()) {
-                            putLong("usuario_id", usuarioAutenticado.id)
-                            putString("tipo_usuario", "paciente")
-                            apply()
+                            val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+                            with(sharedPref.edit()) {
+                                putLong("usuario_id", usuario.id)
+                                putString("tipo_usuario", "paciente")
+                                apply()
+                            }
+
+                            val intent =
+                                Intent(this@LoginPacienteActivity, TelaPacienteActivity::class.java)
+                            intent.putExtra("CHAVE_USUARIO_ID", usuario.id)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this@LoginPacienteActivity,
+                                "Senha incorreta",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
-                        val intent = Intent(this@LoginPacienteActivity, TelaPacienteActivity::class.java)
-                        intent.putExtra("CHAVE_USUARIO_ID", usuarioAutenticado.id)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-                    }
-                    else {
+                    } else {
                         Toast.makeText(
                             this@LoginPacienteActivity,
-                            "Usuário, senha ou email inválidos",
+                            "Usuário não encontrado",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 } catch (e: Exception) {
                     Log.e("LoginPaciente", "Erro ao autenticar", e)
                     Toast.makeText(
@@ -101,12 +118,14 @@ class LoginPacienteActivity : AppCompatActivity() {
                     ).show()
                 } finally {
                     binding.activityLoginBotaoEntrar.isEnabled = true
-
                 }
             }
         }
     }
 
-
-
+    private fun vaiPara(classe: Class<*>, configuracao: Intent.() -> Unit = {}) {
+        val intent = Intent(this, classe)
+        intent.configuracao()
+        startActivity(intent)
+    }
 }

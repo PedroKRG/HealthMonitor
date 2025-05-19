@@ -8,9 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityLoginMedicoBinding
-import com.projeto.healthmonitor.extensions.vaiPara
 import kotlinx.coroutines.launch
-
+import at.favre.lib.crypto.bcrypt.BCrypt
 class LoginMedicoActivity : AppCompatActivity() {
 
 
@@ -25,7 +24,6 @@ class LoginMedicoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
 
         val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
         val usuarioId = sharedPref.getLong("usuario_id", -1)
@@ -66,23 +64,32 @@ class LoginMedicoActivity : AppCompatActivity() {
                 binding.activityLoginMedicoBotaoEntrar.isEnabled = false
 
                 try {
-                    val usuarioAutenticado = medicoDao.autentica(nome, senha, email)
+                    val usuario = medicoDao.buscaPorEmailENome(email, nome)
 
-                    if (usuarioAutenticado != null) {
-                        Log.i("LoginMedico", "Usuário autenticado: ${usuarioAutenticado.id}")
+                    if (usuario != null) {
+                        val resultado = BCrypt.verifyer().verify(senha.toCharArray(), usuario.senha)
 
+                        if (resultado.verified) {
+                            Log.i("LoginMedico", "Usuário autenticado: ${usuario.id}")
 
-                        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-                        sharedPref.edit()
-                            .putLong("usuario_id", usuarioAutenticado.id)
-                            .putString("tipo_usuario", "medico")
-                            .apply()
+                            val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+                            sharedPref.edit()
+                                .putLong("usuario_id", usuario.id)
+                                .putString("tipo_usuario", "medico")
+                                .apply()
 
-                        vaiParaTelaMedico(usuarioAutenticado.id)
+                            vaiParaTelaMedico(usuario.id)
+                        } else {
+                            Toast.makeText(
+                                this@LoginMedicoActivity,
+                                "Senha incorreta",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
                             this@LoginMedicoActivity,
-                            "Usuário, senha ou email inválidos",
+                            "Usuário não encontrado",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
