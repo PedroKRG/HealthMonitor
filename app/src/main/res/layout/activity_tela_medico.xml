@@ -50,4 +50,12 @@
         android:text="Sair"
         android:backgroundTint="#D32F2F"
         android:textColor="@android:color/white" />
+    <Button
+    android:id="@+id/btnLogOut"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="LogOut"
+    android:backgroundTint="#D32F2F"
+    android:textColor="@android:color/white" />
+
 </LinearLayout>

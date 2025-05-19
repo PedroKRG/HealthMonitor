@@ -1,6 +1,7 @@
 package com.projeto.healthmonitor.ui.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -37,13 +38,20 @@ class TelaPacienteActivity : AppCompatActivity() {
             return
         }
 
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+
         lifecycleScope.launch {
-            // Executa a busca em background (Dispatcher.IO) para evitar travar UI
             val paciente = withContext(Dispatchers.IO) {
                 pacienteDao.buscaPorId(id)
             }
 
             if (paciente != null) {
+                sharedPref.edit()
+                    .putLong("usuario_id", paciente.id)
+                    .putString("usuario_nome", paciente.nome)
+                    .putString("usuario_email", paciente.email)
+                    .apply()
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val dataNascimento = LocalDate.parse(paciente.dataNascimento)
                     val idadeCalculada = calcularIdade(dataNascimento)
@@ -61,9 +69,21 @@ class TelaPacienteActivity : AppCompatActivity() {
                     ).show()
                 }
             } else {
-                Toast.makeText(this@TelaPacienteActivity, "Paciente não encontrado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@TelaPacienteActivity,
+                    "Paciente não encontrado",
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
+        }
+
+        binding.btnLogOut.setOnClickListener {
+            sharedPref.edit().clear().apply()
+
+            val intent = Intent(this, SelecaoPerfilActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         binding.btnSair.setOnClickListener {
@@ -81,4 +101,3 @@ class TelaPacienteActivity : AppCompatActivity() {
         return Period.between(dataNascimento, hoje).years
     }
 }
-

@@ -15,18 +15,43 @@ class SelecaoPerfilActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        val usuarioId = sharedPref.getLong("usuario_id", -1)
+        val tipoUsuario = sharedPref.getString("tipo_usuario", null)
+
+        if (usuarioId != -1L && tipoUsuario != null) {
+            when (tipoUsuario) {
+                "paciente" -> {
+                    val intent = Intent(this, TelaPacienteActivity::class.java).apply {
+                        putExtra("CHAVE_USUARIO_ID", usuarioId)
+                    }
+                    startActivity(intent)
+                    finish()
+                    return
+                }
+                "medico" -> {
+                    val intent = Intent(this, TelaMedicoActivity::class.java).apply {
+                        putExtra("CHAVE_USUARIO_ID", usuarioId)
+                    }
+                    startActivity(intent)
+                    finish()
+                    return
+                }
+            }
+        }
+
+
         binding = ActivitySelecaoPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.btnPaciente.setOnClickListener {
-            val intent = Intent(this, LoginPacienteActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, LoginPacienteActivity::class.java))
         }
 
         binding.btnMedico.setOnClickListener {
-            val intent = Intent(this, LoginMedicoActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, LoginMedicoActivity::class.java))
         }
     }
-
 }

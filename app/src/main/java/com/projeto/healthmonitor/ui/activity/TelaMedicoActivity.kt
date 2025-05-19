@@ -1,5 +1,6 @@
 package com.projeto.healthmonitor.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,6 +33,8 @@ class TelaMedicoActivity : AppCompatActivity() {
             return
         }
 
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+
         lifecycleScope.launch {
             // Usa diretamente o Dispatchers.IO na coroutine para não travar a UI
             val medico = withContext(Dispatchers.IO) {
@@ -49,6 +52,14 @@ class TelaMedicoActivity : AppCompatActivity() {
         }
 
         binding.btnSair.setOnClickListener {
+            finish()
+        }
+
+        binding.btnLogOut.setOnClickListener {
+            sharedPref.edit().clear().apply()
+
+            val intent = Intent(this, SelecaoPerfilActivity::class.java)
+            startActivity(intent)
             finish()
         }
 
