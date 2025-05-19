@@ -14,10 +14,13 @@ interface PacienteDao {
     @Query("""
         SELECT * FROM Paciente 
         WHERE nome = :nome
-        AND senha = :senha""")
+        AND senha = :senha
+        AND email = :email
+        """)
 
     suspend fun autentica(
         nome: String,
-        senha: String
+        senha: String,
+        email: String
     ): Paciente?
 }

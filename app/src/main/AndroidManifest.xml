@@ -13,10 +13,19 @@
         android:theme="@style/Theme.HealthMonitor"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.TelaMedicoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.LoginMedicoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.TelaPacienteActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name=".ui.activity.LoginPacienteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.SelecaoPerfilActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
