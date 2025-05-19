@@ -13,6 +13,13 @@
         android:theme="@style/Theme.HealthMonitor"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.CadastroMedicoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.HealthMonitor" />
+        <activity
+            android:name=".ui.activity.CadastroPacienteActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.TelaMedicoActivity"
             android:exported="false" />
         <activity

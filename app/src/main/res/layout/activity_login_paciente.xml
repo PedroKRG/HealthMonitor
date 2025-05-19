@@ -1,65 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutLoginPaciente"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.LoginPacienteActivity"
-    android:padding="24dp">
-
-    <TextView
-        android:id="@+id/textTitulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login Paciente"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F0F4FF">
 
     <EditText
-        android:id="@+id/activity_login_email"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/textTitulo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
-
-    <EditText
-        android:id="@+id/activity_login_nome"
-        android:layout_width="0dp"
+        android:id="@+id/activity_login_paciente_nome"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nome"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toBottomOf="@id/activity_login_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginBottom="12dp" />
 
     <EditText
-        android:id="@+id/activity_login_senha"
-        android:layout_width="0dp"
+        android:id="@+id/activity_login_paciente_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/activity_login_paciente_senha"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Senha"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/activity_login_nome"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginBottom="20dp" />
 
     <Button
         android:id="@+id/activity_login_botao_entrar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Entrar"
-        app:layout_constraintTop_toBottomOf="@id/activity_login_senha"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:backgroundTint="#2B4D8C"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvCadastrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cadastrar"
+        android:textSize="16sp"
+        android:textColor="#2B4D8C"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true" />
+</LinearLayout>

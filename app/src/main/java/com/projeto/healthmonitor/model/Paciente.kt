@@ -11,6 +11,7 @@ data class Paciente(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val nome: String,
+    val dataNascimento: String,
     val senha: String,
     val email: String
 )

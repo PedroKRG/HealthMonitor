@@ -38,6 +38,9 @@ android {
     viewBinding {
         enable = true
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 configurations.all {
     exclude(group = "com.intellij", module = "annotations")
@@ -45,6 +48,8 @@ configurations.all {
 
 
 dependencies {
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.core.ktx)

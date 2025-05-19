@@ -22,35 +22,51 @@ class LoginMedicoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         configuraBotaoEntrar()
+
+        binding.tvCadastrarMedico.setOnClickListener {
+            val intent = Intent(this, CadastroMedicoActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun configuraBotaoEntrar() {
-        binding.activityLoginBotaoEntrar.setOnClickListener {
-            val nome = binding.activityLoginNome.text.toString().trim()
-            val senha = binding.activityLoginSenha.text.toString().trim()
-            val email = binding.activityLoginEmail.text.toString().trim()
+        binding.activityLoginMedicoBotaoEntrar.setOnClickListener {
+            val nome = binding.activityLoginMedicoNome.text.toString().trim()
+            val senha = binding.activityLoginMedicoSenha.text.toString().trim()
+            val email = binding.activityLoginMedicoEmail.text.toString().trim()
 
             if (nome.isEmpty() || senha.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            Log.i("LoginMedico", "Tentando login com: $nome | $email")
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Email inválido", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            Log.i("LoginMedico", "Tentando login com: $nome | $email | $senha")
 
             lifecycleScope.launch {
+                binding.activityLoginMedicoBotaoEntrar.isEnabled = false
                 try {
-                    val medicoAutenticado = medicoDao.autentica(nome, senha, email)
+                    val usuarioAutenticado = medicoDao.autentica(nome, senha, email)
 
-                    if (medicoAutenticado != null) {
-                        Log.i("LoginMedico", "Médico autenticado com sucesso: ID ${medicoAutenticado.id}")
-                        vaiPara(TelaMedicoActivity::class.java) {
-                            putExtra("CHAVE_USUARIO_ID", medicoAutenticado.id)
-                        }
+                    if (usuarioAutenticado != null) {
+                        Log.i("LoginMedico", "Usuário autenticado com sucesso: ID ${usuarioAutenticado.id}")
+
+                        val intent = Intent(this@LoginMedicoActivity, TelaMedicoActivity::class.java)
+                        intent.putExtra("CHAVE_USUARIO_ID", usuarioAutenticado.id)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                        startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(
                             this@LoginMedicoActivity,
-                            "Nome, senha ou email inválidos",
+                            "Usuário, senha ou email inválidos",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -61,14 +77,10 @@ class LoginMedicoActivity : AppCompatActivity() {
                         "Erro inesperado. Tente novamente mais tarde.",
                         Toast.LENGTH_SHORT
                     ).show()
+                } finally {
+                    binding.activityLoginMedicoBotaoEntrar.isEnabled = true
                 }
             }
         }
-    }
-
-    private fun vaiPara(classe: Class<*>, configuracao: Intent.() -> Unit = {}) {
-        val intent = Intent(this, classe)
-        intent.configuracao()
-        startActivity(intent)
     }
 }
