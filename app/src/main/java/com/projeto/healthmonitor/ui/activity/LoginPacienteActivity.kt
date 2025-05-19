@@ -32,7 +32,18 @@ class LoginPacienteActivity : AppCompatActivity() {
             val intent = Intent(this, CadastroPacienteActivity::class.java)
             startActivity(intent)
         }
+
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        val usuarioId = sharedPref.getLong("usuario_id", -1)
+
+        if (usuarioId != -1L) {
+            vaiPara(TelaPacienteActivity::class.java) {
+                putExtra("CHAVE_USUARIO_ID", usuarioId)
+            }
+            finish()
+        }
     }
+
 
     private fun configuraBotaoEntrar() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
@@ -60,13 +71,21 @@ class LoginPacienteActivity : AppCompatActivity() {
                     if (usuarioAutenticado != null) {
                         Log.i("LoginPaciente", "Usuário autenticado com sucesso: ID ${usuarioAutenticado.id}")
 
+
+                        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+                        with(sharedPref.edit()) {
+                            putLong("usuario_id", usuarioAutenticado.id)
+                            putString("tipo_usuario", "paciente")
+                            apply()
+                        }
+
                         val intent = Intent(this@LoginPacienteActivity, TelaPacienteActivity::class.java)
                         intent.putExtra("CHAVE_USUARIO_ID", usuarioAutenticado.id)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
                         startActivity(intent)
                         finish()
-                    } else {
+                    }
+                    else {
                         Toast.makeText(
                             this@LoginPacienteActivity,
                             "Usuário, senha ou email inválidos",
@@ -82,8 +101,12 @@ class LoginPacienteActivity : AppCompatActivity() {
                     ).show()
                 } finally {
                     binding.activityLoginBotaoEntrar.isEnabled = true
+
                 }
             }
         }
     }
+
+
+
 }

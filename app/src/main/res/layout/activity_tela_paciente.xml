@@ -53,6 +53,16 @@
         android:layout_marginTop="32dp"/>
 
     <Button
+        android:id="@+id/btnLogOut"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="LogOut"
+        app:layout_constraintTop_toBottomOf="@id/btnVerHistorico"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <Button
         android:id="@+id/btnSair"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -60,6 +70,6 @@
         app:layout_constraintTop_toBottomOf="@id/btnVerHistorico"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="84dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
