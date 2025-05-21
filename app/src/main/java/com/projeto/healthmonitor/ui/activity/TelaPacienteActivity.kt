@@ -48,6 +48,8 @@ class TelaPacienteActivity : AppCompatActivity() {
             return
         }
 
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+
         carregarDadosPaciente()
         carregarRegistros()
 
@@ -57,10 +59,19 @@ class TelaPacienteActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.btnLogOut.setOnClickListener {
-            // limpar shared prefs etc
+        binding.btnSair.setOnClickListener {
             finish()
         }
+
+        binding.btnLogOut.setOnClickListener {
+
+            sharedPref.edit().clear().apply()
+
+            val intent = Intent(this, SelecaoPerfilActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
