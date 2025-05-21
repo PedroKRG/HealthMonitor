@@ -54,7 +54,7 @@ class InserirDadosActivity : AppCompatActivity() {
             return
         }
 
-        val pressao = pressaoStr.toIntOrNull()
+        val pressao = pressaoStr.toFloatOrNull()
         val glicemia = glicemiaStr.toFloatOrNull()
 
         if (pressao == null || glicemia == null) {
