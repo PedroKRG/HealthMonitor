@@ -46,6 +46,7 @@
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/tvIdade"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -55,6 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/chartPressao"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

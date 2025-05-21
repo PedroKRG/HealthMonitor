@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -32,8 +33,8 @@ class TelaPacienteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTelaPacienteBinding
     private val pacienteDao by lazy { AppDatabase.instancia(this).pacienteDao() }
     private val registroDao by lazy { AppDatabase.instancia(this).registroDao() }
-
     private var pacienteId: Long = -1L
+    private var historicoVisivel = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +52,7 @@ class TelaPacienteActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
 
         carregarDadosPaciente()
-        carregarRegistros()
+
 
         binding.btnInserirDados.setOnClickListener {
             val intent = Intent(this, InserirDadosActivity::class.java)
@@ -71,7 +72,19 @@ class TelaPacienteActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+        binding.btnVerHistorico.setOnClickListener {
 
+            if (historicoVisivel) {
+
+                binding.chartPressao.visibility = View.GONE
+                binding.chartGlicemia.visibility = View.GONE
+                binding.btnVerHistorico.text = "Ver Histórico"
+                historicoVisivel = false
+            } else {
+                carregarRegistros()
+            }
+
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -108,8 +121,23 @@ class TelaPacienteActivity : AppCompatActivity() {
         return Period.between(dataNascimento, hoje).years
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun mostrarGraficos(registros: List<RegistroDiario>) {
+        if (registros.isEmpty()) {
+            Toast.makeText(this, "Nenhum dado disponível para exibir os gráficos", Toast.LENGTH_SHORT).show()
+
+            binding.chartPressao.visibility = View.GONE
+            binding.chartGlicemia.visibility = View.GONE
+            binding.btnVerHistorico.text = "Ver Histórico"
+            historicoVisivel = false
+
+            return
+        }
+
+        binding.chartPressao.visibility = View.VISIBLE
+        binding.chartGlicemia.visibility = View.VISIBLE
+        binding.btnVerHistorico.text = "Ocultar Histórico"
+        historicoVisivel = true
+
         val entradasPressao = registros.mapIndexed { index, registro ->
             Entry(index.toFloat(), registro.pressaoSistolica.toFloat())
         }
@@ -144,7 +172,6 @@ class TelaPacienteActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        // Recarregar registros sempre que voltar da tela de inserção
-        carregarRegistros()
+
     }
 }
