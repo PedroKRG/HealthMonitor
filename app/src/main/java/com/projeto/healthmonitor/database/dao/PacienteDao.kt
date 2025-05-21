@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.projeto.healthmonitor.model.Paciente
-
+import com.projeto.healthmonitor.model.Medico
 
 @Dao
 interface PacienteDao {
@@ -28,5 +28,11 @@ interface PacienteDao {
 
     @Query("SELECT * FROM Paciente WHERE email = :email AND nome = :nome")
     suspend fun buscaPorEmailEnome(email: String, nome: String): Paciente?
+
+    @Query("SELECT * FROM Paciente WHERE medicoId = :medicoId")
+    suspend fun listarPacientesDoMedico(medicoId: Long): List<Paciente>
+
+    @Query("UPDATE Paciente SET medicoId = :medicoId WHERE id = :pacienteId")
+    suspend fun atribuirMedico(medicoId: Long, pacienteId: Long)
 
 }
