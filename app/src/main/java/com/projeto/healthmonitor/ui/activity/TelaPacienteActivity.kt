@@ -1,7 +1,9 @@
 package com.projeto.healthmonitor.ui.activity
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -19,79 +21,73 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Period
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.projeto.healthmonitor.model.RegistroDiario
+
 
 class TelaPacienteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTelaPacienteBinding
     private val pacienteDao by lazy { AppDatabase.instancia(this).pacienteDao() }
+    private val registroDao by lazy { AppDatabase.instancia(this).registroDao() }
 
-    @SuppressLint("SetTextI18n")
+    private var pacienteId: Long = -1L
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTelaPacienteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val id = intent.getLongExtra("CHAVE_USUARIO_ID", -1)
-        if (id == -1L) {
+        pacienteId = intent.getLongExtra("CHAVE_USUARIO_ID", -1)
+        if (pacienteId == -1L) {
             Toast.makeText(this, "Erro ao carregar dados do paciente", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        carregarDadosPaciente()
+        carregarRegistros()
 
-        lifecycleScope.launch {
-            val paciente = withContext(Dispatchers.IO) {
-                pacienteDao.buscaPorId(id)
-            }
-
-            if (paciente != null) {
-                sharedPref.edit()
-                    .putLong("usuario_id", paciente.id)
-                    .putString("usuario_nome", paciente.nome)
-                    .putString("usuario_email", paciente.email)
-                    .apply()
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val dataNascimento = LocalDate.parse(paciente.dataNascimento)
-                    val idadeCalculada = calcularIdade(dataNascimento)
-
-                    binding.apply {
-                        tvBoasVindas.text = "Olá, ${paciente.nome}!"
-                        tvEmail.text = "Email: ${paciente.email}"
-                        tvIdade.text = "Idade: $idadeCalculada"
-                    }
-                } else {
-                    Toast.makeText(
-                        this@TelaPacienteActivity,
-                        "Seu dispositivo não suporta cálculo de idade (API < 26)",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            } else {
-                Toast.makeText(
-                    this@TelaPacienteActivity,
-                    "Paciente não encontrado",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
+        binding.btnInserirDados.setOnClickListener {
+            val intent = Intent(this, InserirDadosActivity::class.java)
+            intent.putExtra("PACIENTE_ID", pacienteId)
+            startActivity(intent)
         }
 
         binding.btnLogOut.setOnClickListener {
-            sharedPref.edit().clear().apply()
-
-            val intent = Intent(this, SelecaoPerfilActivity::class.java)
-            startActivity(intent)
+            // limpar shared prefs etc
             finish()
         }
+    }
 
-        binding.btnSair.setOnClickListener {
-            finish()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun carregarDadosPaciente() {
+        lifecycleScope.launch {
+            val paciente = withContext(Dispatchers.IO) {
+                pacienteDao.buscaPorId(pacienteId)
+            }
+            paciente?.let {
+                val dataNascimento = LocalDate.parse(it.dataNascimento)
+                val idade = calcularIdade(dataNascimento)
+                binding.apply {
+                    tvBoasVindas.text = "Olá, ${it.nome}!"
+                    tvEmail.text = "Email: ${it.email}"
+                    tvIdade.text = "Idade: $idade"
+                }
+            }
         }
+    }
 
-        binding.btnVerHistorico.setOnClickListener {
-            Toast.makeText(this, "Funcionalidade em construção", Toast.LENGTH_SHORT).show()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun carregarRegistros() {
+        lifecycleScope.launch {
+            val registros = withContext(Dispatchers.IO) {
+                registroDao.buscaTodosPorPaciente(pacienteId)
+            }
+            mostrarGraficos(registros)
         }
     }
 
@@ -99,5 +95,45 @@ class TelaPacienteActivity : AppCompatActivity() {
     private fun calcularIdade(dataNascimento: LocalDate): Int {
         val hoje = LocalDate.now()
         return Period.between(dataNascimento, hoje).years
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun mostrarGraficos(registros: List<RegistroDiario>) {
+        val entradasPressao = registros.mapIndexed { index, registro ->
+            Entry(index.toFloat(), registro.pressaoSistolica.toFloat())
+        }
+
+        val entradasGlicemia = registros.mapIndexed { index, registro ->
+            Entry(index.toFloat(), registro.glicemia.toFloat())
+        }
+
+        val dataSetPressao = LineDataSet(entradasPressao, "Pressão Sistólica").apply {
+            color = Color.RED
+            lineWidth = 2f
+            setDrawCircles(true)
+            circleRadius = 4f
+            setDrawValues(false)
+        }
+
+        val dataSetGlicemia = LineDataSet(entradasGlicemia, "Glicemia").apply {
+            color = Color.BLUE
+            lineWidth = 2f
+            setDrawCircles(true)
+            circleRadius = 4f
+            setDrawValues(false)
+        }
+
+        binding.chartPressao.data = LineData(dataSetPressao)
+        binding.chartPressao.invalidate()
+
+        binding.chartGlicemia.data = LineData(dataSetGlicemia)
+        binding.chartGlicemia.invalidate()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        // Recarregar registros sempre que voltar da tela de inserção
+        carregarRegistros()
     }
 }

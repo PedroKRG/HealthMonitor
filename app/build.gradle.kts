@@ -49,6 +49,7 @@ configurations.all {
 
 dependencies {
     implementation("at.favre.lib:bcrypt:0.9.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     kapt(libs.androidx.room.compiler)
