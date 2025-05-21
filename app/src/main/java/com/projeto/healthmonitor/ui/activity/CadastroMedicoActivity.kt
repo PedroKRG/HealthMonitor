@@ -3,6 +3,7 @@ package com.projeto.healthmonitor.ui.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ class CadastroMedicoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCadastroMedicoBinding.inflate(layoutInflater)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(binding.root)
 
         binding.btnSelecionarDataNascimento.setOnClickListener {
@@ -39,6 +41,19 @@ class CadastroMedicoActivity : AppCompatActivity() {
 
         binding.btnCadastrar.setOnClickListener {
             cadastraMedico()
+        }
+        binding.btnVoltar.setOnClickListener{
+            finish()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
