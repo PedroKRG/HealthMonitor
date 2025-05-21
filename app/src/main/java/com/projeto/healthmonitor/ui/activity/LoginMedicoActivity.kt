@@ -3,6 +3,7 @@ package com.projeto.healthmonitor.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ class LoginMedicoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
         val usuarioId = sharedPref.getLong("usuario_id", -1)
@@ -39,6 +41,19 @@ class LoginMedicoActivity : AppCompatActivity() {
         binding.tvCadastrarMedico.setOnClickListener {
             val intent = Intent(this, CadastroMedicoActivity::class.java)
             startActivity(intent)
+        }
+        binding.activityLoginBotaoVoltar.setOnClickListener{
+            finish()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

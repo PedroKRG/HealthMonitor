@@ -3,13 +3,14 @@ package com.projeto.healthmonitor.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityLoginPacienteBinding
-import com.projeto.healthmonitor.extensions.vaiPara
+
 import kotlinx.coroutines.launch
 
 
@@ -26,12 +27,16 @@ class LoginPacienteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         configuraBotaoEntrar()
 
         binding.tvCadastrar.setOnClickListener {
             val intent = Intent(this, CadastroPacienteActivity::class.java)
             startActivity(intent)
+        }
+        binding.activityLoginBotaoVoltar.setOnClickListener{
+            finish()
         }
 
         val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
@@ -42,6 +47,16 @@ class LoginPacienteActivity : AppCompatActivity() {
                 putExtra("CHAVE_USUARIO_ID", usuarioId)
             }
             finish()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
