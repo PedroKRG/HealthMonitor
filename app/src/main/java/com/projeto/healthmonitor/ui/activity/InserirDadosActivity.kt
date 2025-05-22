@@ -42,7 +42,7 @@ class InserirDadosActivity : AppCompatActivity() {
 
     suspend fun obterDataAtual(): String {
         var tentativa = 0
-        val maxTentativas = 3
+        val maxTentativas = 50
 
         while (tentativa < maxTentativas) {
             try {
@@ -58,7 +58,7 @@ class InserirDadosActivity : AppCompatActivity() {
                 if (tentativa == maxTentativas) {
                     break
                 }
-                kotlinx.coroutines.delay(350)
+                kotlinx.coroutines.delay(100)
             }
         }
         return "00/00/0000"
@@ -129,6 +129,17 @@ class InserirDadosActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val dataAtual = withContext(Dispatchers.IO) {
                 obterDataAtual()
+            }
+
+            if (dataAtual == "00/00/0000") {
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@InserirDadosActivity, "Não foi possível salvar os dados, Tente novamente mais tarde.", Toast.LENGTH_LONG).show()
+                    binding.contentLayout.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.lottieProgress.cancelAnimation()
+                }
+                return@launch
             }
 
             val registro = RegistroDiario(
