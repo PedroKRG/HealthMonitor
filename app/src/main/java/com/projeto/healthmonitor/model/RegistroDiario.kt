@@ -11,6 +11,6 @@ data class RegistroDiario(
     val id: Long = 0,
     val pacienteId: Long,
     val data: String,
-    val pressaoSistolica: Float,
-    val glicemia: Float
+    val pressaoSistolica: Int,
+    val glicemia: Int
 )

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.projeto.healthmonitor.model.Paciente
-import com.projeto.healthmonitor.model.Medico
+
 
 @Dao
 interface PacienteDao {

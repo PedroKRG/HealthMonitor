@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +13,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityCadastroPacienteBinding
 import com.projeto.healthmonitor.model.Paciente
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import at.favre.lib.crypto.bcrypt.BCrypt
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -91,13 +93,25 @@ class CadastroPacienteActivity : AppCompatActivity() {
             return
         }
 
+        binding.contentLayout.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+        binding.lottieProgress.playAnimation()
+
         lifecycleScope.launch {
-            val existente = pacienteDao.buscaPorEmail(email)
-            if (existente != null) {
-                Toast.makeText(this@CadastroPacienteActivity, "Email já cadastrado", Toast.LENGTH_SHORT).show()
-                return@launch
+
+            val existente = withContext(Dispatchers.IO) {
+                pacienteDao.buscaPorEmail(email)
             }
 
+            if (existente != null) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@CadastroPacienteActivity, "Email já cadastrado", Toast.LENGTH_SHORT).show()
+                    binding.contentLayout.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.lottieProgress.cancelAnimation()
+                }
+                return@launch
+            }
 
             val senhaCriptografada = at.favre.lib.crypto.bcrypt.BCrypt.withDefaults()
                 .hashToString(12, senha.toCharArray())
@@ -109,12 +123,18 @@ class CadastroPacienteActivity : AppCompatActivity() {
                 dataNascimento = nascimento.toString()
             )
 
-            pacienteDao.salva(novoPaciente)
-            Toast.makeText(this@CadastroPacienteActivity, "Cadastro realizado!", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.IO) {
+                pacienteDao.salva(novoPaciente)
+            }
 
-            val intent = Intent(this@CadastroPacienteActivity, LoginPacienteActivity::class.java)
-            startActivity(intent)
-            finish()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@CadastroPacienteActivity, "Cadastro realizado!", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this@CadastroPacienteActivity, LoginPacienteActivity::class.java)
+                startActivity(intent)
+                binding.lottieProgress.cancelAnimation()
+                finish()
+            }
         }
     }
 }

@@ -3,16 +3,11 @@ package com.projeto.healthmonitor.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.View.*
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.projeto.healthmonitor.Adapter.PacienteAdapter
-import com.projeto.healthmonitor.R
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityTelaMedicoBinding
 import kotlinx.coroutines.Dispatchers

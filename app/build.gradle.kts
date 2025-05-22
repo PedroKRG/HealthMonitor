@@ -48,6 +48,11 @@ configurations.all {
 
 
 dependencies {
+    implementation ("com.airbnb.android:lottie:6.1.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.moshi:moshi:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("com.google.android.material:material:1.11.0")
     implementation("at.favre.lib:bcrypt:0.9.0")
