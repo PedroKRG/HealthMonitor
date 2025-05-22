@@ -167,7 +167,7 @@ class TelaPacienteActivity : AppCompatActivity() {
 
         binding.chartPressao.xAxis.apply {
             valueFormatter = dateFormatter
-            granularity = 0f
+            granularity = 1f
             position = XAxis.XAxisPosition.BOTTOM
             labelRotationAngle = -33f
         }
