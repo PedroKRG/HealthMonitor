@@ -69,13 +69,13 @@ class TelaPacienteActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        binding.btnVerHistorico.setOnClickListener {
+        binding.btnVerGraficos.setOnClickListener {
 
             if (historicoVisivel) {
 
                 binding.chartPressao.visibility = View.GONE
                 binding.chartGlicemia.visibility = View.GONE
-                binding.btnVerHistorico.text = "Ver Histórico"
+                binding.btnVerGraficos.text = "Ver Gráficos"
                 historicoVisivel = false
             } else {
                 carregarRegistros()
@@ -126,7 +126,7 @@ class TelaPacienteActivity : AppCompatActivity() {
 
             binding.chartPressao.visibility = View.GONE
             binding.chartGlicemia.visibility = View.GONE
-            binding.btnVerHistorico.text = "Ver Histórico"
+            binding.btnVerGraficos.text = "Ver Gráficos"
             historicoVisivel = false
 
             return
@@ -134,7 +134,7 @@ class TelaPacienteActivity : AppCompatActivity() {
 
         binding.chartPressao.visibility = View.VISIBLE
         binding.chartGlicemia.visibility = View.VISIBLE
-        binding.btnVerHistorico.text = "Ocultar Histórico"
+        binding.btnVerGraficos.text = "Ocultar Gráficos"
         historicoVisivel = true
 
         val entradasPressao = registros.mapIndexed { index, registro ->
@@ -167,9 +167,9 @@ class TelaPacienteActivity : AppCompatActivity() {
 
         binding.chartPressao.xAxis.apply {
             valueFormatter = dateFormatter
-            granularity = 1f
+            granularity = 0f
             position = XAxis.XAxisPosition.BOTTOM
-            labelRotationAngle = -30f
+            labelRotationAngle = -33f
         }
 
 
@@ -177,7 +177,7 @@ class TelaPacienteActivity : AppCompatActivity() {
             valueFormatter = dateFormatter
             granularity = 1f
             position = XAxis.XAxisPosition.BOTTOM
-            labelRotationAngle = -30f
+            labelRotationAngle = -33f
         }
 
         binding.chartPressao.data = LineData(dataSetPressao)
