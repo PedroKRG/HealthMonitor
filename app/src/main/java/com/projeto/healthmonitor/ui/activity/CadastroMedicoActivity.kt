@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,8 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import at.favre.lib.crypto.bcrypt.BCrypt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CadastroMedicoActivity : AppCompatActivity() {
 
@@ -94,31 +97,49 @@ class CadastroMedicoActivity : AppCompatActivity() {
             return
         }
 
-
-        val senhaCriptografada = BCrypt.withDefaults().hashToString(12, senha.toCharArray())
-
-        val novoMedico = Medico(
-            nome = nome,
-            email = email,
-            senha = senhaCriptografada,
-            crm = crm,
-            especialidade = especialidade,
-            dataNascimento = nascimento.toString()
-        )
+        binding.contentLayout.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
+        binding.lottieProgress.playAnimation()
 
         lifecycleScope.launch {
-            val existente = medicoDao.buscaPorEmail(email)
+            val existente = withContext(Dispatchers.IO) {
+                medicoDao.buscaPorEmail(email)
+            }
+
             if (existente != null) {
-                Toast.makeText(this@CadastroMedicoActivity, "Email já cadastrado", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@CadastroMedicoActivity, "Email já cadastrado", Toast.LENGTH_SHORT).show()
+                    binding.contentLayout.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.GONE
+                    binding.lottieProgress.cancelAnimation()
+                }
                 return@launch
             }
 
-            medicoDao.salva(novoMedico)
-            Toast.makeText(this@CadastroMedicoActivity, "Cadastro realizado!", Toast.LENGTH_SHORT).show()
+            val senhaCriptografada = at.favre.lib.crypto.bcrypt.BCrypt.withDefaults()
+                .hashToString(12, senha.toCharArray())
 
-            val intent = Intent(this@CadastroMedicoActivity, LoginMedicoActivity::class.java)
-            startActivity(intent)
-            finish()
+            val novoMedico = Medico(
+                nome = nome,
+                email = email,
+                senha = senhaCriptografada,
+                crm = crm,
+                especialidade = especialidade,
+                dataNascimento = nascimento.toString()
+            )
+
+            withContext(Dispatchers.IO) {
+                medicoDao.salva(novoMedico)
+            }
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@CadastroMedicoActivity, "Cadastro realizado!", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this@CadastroMedicoActivity, LoginMedicoActivity::class.java)
+                startActivity(intent)
+                binding.lottieProgress.cancelAnimation()
+                finish()
+            }
         }
     }
 }

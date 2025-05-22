@@ -2,11 +2,7 @@ package com.projeto.healthmonitor.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.projeto.healthmonitor.R
 import com.projeto.healthmonitor.databinding.ActivitySelecaoPerfilBinding
 
 class SelecaoPerfilActivity : AppCompatActivity() {

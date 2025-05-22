@@ -1,24 +1,19 @@
 package com.projeto.healthmonitor.ui.activity
 
-import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.projeto.healthmonitor.R
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityTelaPacienteVisualizacaoBinding
+import com.projeto.healthmonitor.extensions.DateValueFormatter
 import com.projeto.healthmonitor.model.RegistroDiario
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,6 +89,20 @@ class TelaPacienteVisualizacaoActivity : AppCompatActivity() {
     }
 
     private fun mostrarGraficos(registros: List<RegistroDiario>) {
+        if (registros.isEmpty()) {
+            Toast.makeText(this, "Nenhum dado disponível para exibir os gráficos", Toast.LENGTH_SHORT).show()
+
+            binding.chartPressao.visibility = View.GONE
+            binding.chartGlicemia.visibility = View.GONE
+
+
+            return
+        }
+
+        binding.chartPressao.visibility = View.VISIBLE
+        binding.chartGlicemia.visibility = View.VISIBLE
+
+
         val entradasPressao = registros.mapIndexed { index, registro ->
             Entry(index.toFloat(), registro.pressaoSistolica.toFloat())
         }
@@ -102,32 +111,45 @@ class TelaPacienteVisualizacaoActivity : AppCompatActivity() {
             Entry(index.toFloat(), registro.glicemia.toFloat())
         }
 
-        val dataSetPressao = LineDataSet(entradasPressao, "Pressão").apply {
-            color = Color.BLUE
-            valueTextColor = Color.BLACK
-            lineWidth = 2f
-            circleRadius = 4f
-            setCircleColor(Color.BLUE)
+        val dataSetPressao = LineDataSet(entradasPressao, "Pressão Sistólica").apply {
+            color = Color.RED
+            lineWidth = 3f
+            setDrawCircles(true)
+            circleRadius = 6f
+            setDrawValues(false)
         }
 
         val dataSetGlicemia = LineDataSet(entradasGlicemia, "Glicemia").apply {
-            color = Color.RED
-            valueTextColor = Color.BLACK
-            lineWidth = 2f
-            circleRadius = 4f
-            setCircleColor(Color.RED)
+            color = Color.BLUE
+            lineWidth = 3f
+            setDrawCircles(true)
+            circleRadius = 6f
+            setDrawValues(false)
         }
 
-        binding.chartPressao.apply {
-            data = LineData(dataSetPressao)
-            visibility = View.VISIBLE
-            invalidate()
+
+        val dateFormatter = DateValueFormatter(registros)
+
+
+        binding.chartPressao.xAxis.apply {
+            valueFormatter = dateFormatter
+            granularity = 1f
+            position = XAxis.XAxisPosition.BOTTOM
+            labelRotationAngle = -30f
         }
 
-        binding.chartGlicemia.apply {
-            data = LineData(dataSetGlicemia)
-            visibility = View.VISIBLE
-            invalidate()
+
+        binding.chartGlicemia.xAxis.apply {
+            valueFormatter = dateFormatter
+            granularity = 1f
+            position = XAxis.XAxisPosition.BOTTOM
+            labelRotationAngle = -30f
         }
+
+        binding.chartPressao.data = LineData(dataSetPressao)
+        binding.chartPressao.invalidate()
+
+        binding.chartGlicemia.data = LineData(dataSetGlicemia)
+        binding.chartGlicemia.invalidate()
     }
 }

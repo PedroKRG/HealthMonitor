@@ -1,20 +1,15 @@
 package com.projeto.healthmonitor.ui.activity
 
-
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.projeto.healthmonitor.R
+import com.github.mikephil.charting.components.XAxis
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityTelaPacienteBinding
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +20,7 @@ import java.time.Period
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.projeto.healthmonitor.extensions.DateValueFormatter
 import com.projeto.healthmonitor.model.RegistroDiario
 
 
@@ -35,6 +31,7 @@ class TelaPacienteActivity : AppCompatActivity() {
     private val registroDao by lazy { AppDatabase.instancia(this).registroDao() }
     private var pacienteId: Long = -1L
     private var historicoVisivel = false
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +83,8 @@ class TelaPacienteActivity : AppCompatActivity() {
 
         }
     }
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun carregarDadosPaciente() {
@@ -148,18 +147,37 @@ class TelaPacienteActivity : AppCompatActivity() {
 
         val dataSetPressao = LineDataSet(entradasPressao, "Pressão Sistólica").apply {
             color = Color.RED
-            lineWidth = 2f
+            lineWidth = 3f
             setDrawCircles(true)
-            circleRadius = 4f
+            circleRadius = 6f
             setDrawValues(false)
         }
 
         val dataSetGlicemia = LineDataSet(entradasGlicemia, "Glicemia").apply {
             color = Color.BLUE
-            lineWidth = 2f
+            lineWidth = 3f
             setDrawCircles(true)
-            circleRadius = 4f
+            circleRadius = 6f
             setDrawValues(false)
+        }
+
+
+        val dateFormatter = DateValueFormatter(registros)
+
+
+        binding.chartPressao.xAxis.apply {
+            valueFormatter = dateFormatter
+            granularity = 1f
+            position = XAxis.XAxisPosition.BOTTOM
+            labelRotationAngle = -30f
+        }
+
+
+        binding.chartGlicemia.xAxis.apply {
+            valueFormatter = dateFormatter
+            granularity = 1f
+            position = XAxis.XAxisPosition.BOTTOM
+            labelRotationAngle = -30f
         }
 
         binding.chartPressao.data = LineData(dataSetPressao)
@@ -172,6 +190,7 @@ class TelaPacienteActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        carregarRegistros()
 
     }
 }
