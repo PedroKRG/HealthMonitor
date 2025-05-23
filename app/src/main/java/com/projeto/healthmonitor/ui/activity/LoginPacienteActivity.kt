@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityLoginPacienteBinding
+import com.projeto.healthmonitor.extensions.Notificacoes.criarCanal
 
 import kotlinx.coroutines.launch
 
@@ -29,7 +30,11 @@ class LoginPacienteActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        verificaUsuarioLogado()
+
         configuraBotaoEntrar()
+
+        criarCanal(this)
 
         binding.tvCadastrar.setOnClickListener {
             val intent = Intent(this, CadastroPacienteActivity::class.java)
@@ -38,16 +43,20 @@ class LoginPacienteActivity : AppCompatActivity() {
         binding.activityLoginBotaoVoltar.setOnClickListener{
             finish()
         }
+    }
 
+    private fun verificaUsuarioLogado() {
         val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-        val usuarioId = sharedPref.getLong("usuario_id", -1)
+        val usuarioId = sharedPref.getLong("usuario_id", -1L)
+        val tipoUsuario = sharedPref.getString("tipo_usuario", "")
 
-        if (usuarioId != -1L) {
+        if (usuarioId != -1L && tipoUsuario == "paciente") {
             vaiPara(TelaPacienteActivity::class.java) {
                 putExtra("CHAVE_USUARIO_ID", usuarioId)
             }
             finish()
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -95,12 +104,7 @@ class LoginPacienteActivity : AppCompatActivity() {
                                 "Usuário autenticado com sucesso: ID ${usuario.id}"
                             )
 
-                            val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-                            with(sharedPref.edit()) {
-                                putLong("usuario_id", usuario.id)
-                                putString("tipo_usuario", "paciente")
-                                apply()
-                            }
+                            salvarUsuarioLogado(usuario.id, "paciente")
 
                             val intent =
                                 Intent(this@LoginPacienteActivity, TelaPacienteActivity::class.java)
@@ -135,6 +139,15 @@ class LoginPacienteActivity : AppCompatActivity() {
                     binding.activityLoginBotaoEntrar.isEnabled = true
                 }
             }
+        }
+    }
+
+    private fun salvarUsuarioLogado(usuarioId: Long, tipoUsuario: String) {
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putLong("usuario_id", usuarioId)
+            putString("tipo_usuario", tipoUsuario)
+            apply()
         }
     }
 

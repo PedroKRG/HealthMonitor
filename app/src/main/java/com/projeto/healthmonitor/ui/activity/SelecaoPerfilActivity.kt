@@ -1,8 +1,12 @@
 package com.projeto.healthmonitor.ui.activity
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.projeto.healthmonitor.databinding.ActivitySelecaoPerfilBinding
 
 class SelecaoPerfilActivity : AppCompatActivity() {
@@ -10,6 +14,8 @@ class SelecaoPerfilActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySelecaoPerfilBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        verificarPermissaoNotificacao(this)
+
         super.onCreate(savedInstanceState)
 
 
@@ -27,6 +33,7 @@ class SelecaoPerfilActivity : AppCompatActivity() {
                     finish()
                     return
                 }
+
                 "medico" -> {
                     val intent = Intent(this, TelaMedicoActivity::class.java).apply {
                         putExtra("CHAVE_USUARIO_ID", usuarioId)
@@ -48,6 +55,20 @@ class SelecaoPerfilActivity : AppCompatActivity() {
 
         binding.btnMedico.setOnClickListener {
             startActivity(Intent(this, LoginMedicoActivity::class.java))
+        }
+    }
+
+    fun verificarPermissaoNotificacao(context: Activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    context,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
         }
     }
 }

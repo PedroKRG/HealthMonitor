@@ -116,7 +116,7 @@ class TelaPacienteVisualizacaoActivity : AppCompatActivity() {
             lineWidth = 3f
             setDrawCircles(true)
             circleRadius = 6f
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
         val dataSetGlicemia = LineDataSet(entradasGlicemia, "Glicemia").apply {
@@ -124,7 +124,7 @@ class TelaPacienteVisualizacaoActivity : AppCompatActivity() {
             lineWidth = 3f
             setDrawCircles(true)
             circleRadius = 6f
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
 

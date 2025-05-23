@@ -52,7 +52,9 @@ class TelaMedicoActivity : AppCompatActivity() {
 
         binding.btnLogOut.setOnClickListener {
             sharedPref.edit().clear().apply()
-            startActivity(Intent(this, SelecaoPerfilActivity::class.java))
+            val intent = Intent(this, SelecaoPerfilActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
             finish()
         }
 
