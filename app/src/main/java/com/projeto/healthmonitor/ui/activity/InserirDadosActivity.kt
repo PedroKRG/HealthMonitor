@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.projeto.healthmonitor.api.TimeApiService
 import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityInserirDadosBinding
+import com.projeto.healthmonitor.extensions.Notificacoes
 import com.projeto.healthmonitor.model.RegistroDiario
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -71,6 +72,7 @@ class InserirDadosActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Notificacoes.criarCanal(this)
         super.onCreate(savedInstanceState)
         binding = ActivityInserirDadosBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -126,6 +128,7 @@ class InserirDadosActivity : AppCompatActivity() {
         binding.loadingLayout.visibility = View.VISIBLE
         binding.lottieProgress.playAnimation()
 
+
         lifecycleScope.launch {
             val dataAtual = withContext(Dispatchers.IO) {
                 obterDataAtual()
@@ -134,7 +137,11 @@ class InserirDadosActivity : AppCompatActivity() {
             if (dataAtual == "00/00/0000") {
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@InserirDadosActivity, "Não foi possível salvar os dados, Tente novamente mais tarde.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@InserirDadosActivity,
+                        "Não foi possível salvar os dados, Tente novamente mais tarde.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     binding.contentLayout.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
                     binding.lottieProgress.cancelAnimation()
@@ -155,9 +162,63 @@ class InserirDadosActivity : AppCompatActivity() {
 
             Toast.makeText(this@InserirDadosActivity, "Dados salvos!", Toast.LENGTH_SHORT).show()
 
-            // Parar animação e fechar Activity
+
             binding.lottieProgress.cancelAnimation()
+            avaliarEEnviarNotificacao(pressao, glicemia, pacienteId)
             finish()
+        }
+    }
+
+    private fun avaliarEEnviarNotificacao(pressao: Int, glicemia: Int, pacienteId: Long) {
+        val mensagens = mutableListOf<String>()
+
+
+        when {
+            pressao < 90 -> mensagens.add("Pressão muito baixa: $pressao mmHg")
+            pressao in 90..120 -> mensagens.add("Pressão normal: $pressao mmHg")
+            pressao in 121..139 -> mensagens.add("Pressão ligeiramente elevada: $pressao mmHg")
+            pressao >= 140 -> mensagens.add("Pressão alta: $pressao mmHg")
+        }
+
+
+        when {
+            glicemia < 70 -> mensagens.add("Glicemia muito baixa: $glicemia mg/dL")
+            glicemia in 70..99 -> mensagens.add("Glicemia normal: $glicemia mg/dL")
+            glicemia in 100..125 -> mensagens.add("Glicemia preocupante: $glicemia mg/dL")
+            glicemia >= 126 -> mensagens.add("Glicemia alta: $glicemia mg/dL")
+        }
+
+        if (mensagens.isNotEmpty()) {
+
+            Notificacoes.enviarNotificacao(
+                context = this,
+                titulo = "Análise dos Dados Registrados",
+                mensagem = mensagens.joinToString("\n"),
+                id = (System.currentTimeMillis() % Int.MAX_VALUE).toInt(),
+                activityDestino = AlertaActivity::class.java,
+                pacienteId = pacienteId
+            )
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val medico = registroDao.buscarMedicoPorPaciente(pacienteId)
+                val paciente = registroDao.buscarPacientePorId(pacienteId)
+
+                if (medico != null && paciente != null) {
+                    val nomePaciente = paciente.nome
+
+                    withContext(Dispatchers.Main) {
+                        // Notificação para o médico
+                        Notificacoes.enviarNotificacao(
+                            context = this@InserirDadosActivity,
+                            titulo = "Alerta de Saúde: $nomePaciente",
+                            mensagem = mensagens.joinToString("\n"),
+                            id = ((System.currentTimeMillis() + 1) % Int.MAX_VALUE).toInt(),
+                            activityDestino = AlertaActivity::class.java,
+                            pacienteId = medico.id
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ class TelaPacienteActivity : AppCompatActivity() {
     private val pacienteDao by lazy { AppDatabase.instancia(this).pacienteDao() }
     private val registroDao by lazy { AppDatabase.instancia(this).registroDao() }
     private var pacienteId: Long = -1L
-    private var historicoVisivel = false
+    private var historicoVisivel = true
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,13 +62,13 @@ class TelaPacienteActivity : AppCompatActivity() {
         }
 
         binding.btnLogOut.setOnClickListener {
-
             sharedPref.edit().clear().apply()
-
             val intent = Intent(this, SelecaoPerfilActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
+
         binding.btnVerGraficos.setOnClickListener {
 
             if (historicoVisivel) {
@@ -137,6 +137,8 @@ class TelaPacienteActivity : AppCompatActivity() {
         binding.btnVerGraficos.text = "Ocultar Gráficos"
         historicoVisivel = true
 
+
+
         val entradasPressao = registros.mapIndexed { index, registro ->
             Entry(index.toFloat(), registro.pressaoSistolica.toFloat())
         }
@@ -150,7 +152,7 @@ class TelaPacienteActivity : AppCompatActivity() {
             lineWidth = 3f
             setDrawCircles(true)
             circleRadius = 6f
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
         val dataSetGlicemia = LineDataSet(entradasGlicemia, "Glicemia").apply {
@@ -158,7 +160,7 @@ class TelaPacienteActivity : AppCompatActivity() {
             lineWidth = 3f
             setDrawCircles(true)
             circleRadius = 6f
-            setDrawValues(false)
+            setDrawValues(true)
         }
 
 
@@ -179,6 +181,7 @@ class TelaPacienteActivity : AppCompatActivity() {
             position = XAxis.XAxisPosition.BOTTOM
             labelRotationAngle = -33f
         }
+
 
         binding.chartPressao.data = LineData(dataSetPressao)
         binding.chartPressao.invalidate()

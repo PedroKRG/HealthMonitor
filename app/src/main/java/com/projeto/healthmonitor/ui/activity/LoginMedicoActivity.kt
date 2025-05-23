@@ -11,8 +11,9 @@ import com.projeto.healthmonitor.database.AppDatabase
 import com.projeto.healthmonitor.databinding.ActivityLoginMedicoBinding
 import kotlinx.coroutines.launch
 import at.favre.lib.crypto.bcrypt.BCrypt
-class LoginMedicoActivity : AppCompatActivity() {
+import com.projeto.healthmonitor.extensions.Notificacoes.criarCanal
 
+class LoginMedicoActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityLoginMedicoBinding.inflate(layoutInflater)
@@ -27,22 +28,28 @@ class LoginMedicoActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-        val usuarioId = sharedPref.getLong("usuario_id", -1)
-        val tipoUsuario = sharedPref.getString("tipo_usuario", "")
-
-        if (usuarioId != -1L && tipoUsuario == "medico") {
-            vaiParaTelaMedico(usuarioId)
-            return
-        }
+        verificaUsuarioLogado()
 
         configuraBotaoEntrar()
+
+        criarCanal(this)
 
         binding.tvCadastrarMedico.setOnClickListener {
             val intent = Intent(this, CadastroMedicoActivity::class.java)
             startActivity(intent)
         }
-        binding.activityLoginBotaoVoltar.setOnClickListener{
+        binding.activityLoginBotaoVoltar.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun verificaUsuarioLogado() {
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        val usuarioId = sharedPref.getLong("usuario_id", -1L)
+        val tipoUsuario = sharedPref.getString("tipo_usuario", "")
+
+        if (usuarioId != -1L && tipoUsuario == "medico") {
+            vaiParaTelaMedico(usuarioId)
             finish()
         }
     }
@@ -87,11 +94,7 @@ class LoginMedicoActivity : AppCompatActivity() {
                         if (resultado.verified) {
                             Log.i("LoginMedico", "Usuário autenticado: ${usuario.id}")
 
-                            val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
-                            sharedPref.edit()
-                                .putLong("usuario_id", usuario.id)
-                                .putString("tipo_usuario", "medico")
-                                .apply()
+                            salvarUsuarioLogado(usuario.id, "medico")
 
                             vaiParaTelaMedico(usuario.id)
                         } else {
@@ -119,6 +122,15 @@ class LoginMedicoActivity : AppCompatActivity() {
                     binding.activityLoginMedicoBotaoEntrar.isEnabled = true
                 }
             }
+        }
+    }
+
+    private fun salvarUsuarioLogado(usuarioId: Long, tipoUsuario: String) {
+        val sharedPref = getSharedPreferences("usuario_prefs", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putLong("usuario_id", usuarioId)
+            putString("tipo_usuario", tipoUsuario)
+            apply()
         }
     }
 
