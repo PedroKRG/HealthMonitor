@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="#E8F5E9">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <EditText
+            android:id="@+id/edtPressaoSistolica"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Pressão Sistólica"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:textColor="#2E7D32"
+            android:textColorHint="#81C784"
+            app:layout_constraintWidth_max="600dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+
+        <EditText
+            android:id="@+id/edtGlicemia"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Glicemia"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:textColor="#2E7D32"
+            android:textColorHint="#81C784"
+            app:layout_constraintWidth_max="600dp"
+            app:layout_constraintTop_toBottomOf="@id/edtPressaoSistolica"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+
+        <Button
+            android:id="@+id/btnSalvar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Salvar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#66BB6A"
+            android:layout_marginTop="24dp"
+            app:layout_constraintWidth_max="600dp"
+            app:layout_constraintTop_toBottomOf="@id/edtGlicemia"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+
+        <Button
+            android:id="@+id/btnVoltar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Voltar"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#66BB6A"
+            android:layout_marginTop="24dp"
+            app:layout_constraintWidth_max="600dp"
+            app:layout_constraintTop_toBottomOf="@id/btnSalvar"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#80000000"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieProgress"
+            android:layout_width="333dp"
+            android:layout_height="333dp"
+            app:lottie_rawRes="@raw/loading_animation"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="visible" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salvando dados..."
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp" />
+    </LinearLayout>
+</FrameLayout>

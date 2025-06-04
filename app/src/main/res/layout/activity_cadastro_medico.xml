@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#E8F5E9">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxWidth="600dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editTextNome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nome"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:textColor="#1B5E20"
+                android:textColorHint="#4CAF50" />
+
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:textColor="#1B5E20"
+                android:textColorHint="#4CAF50"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/editTextSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Senha"
+                android:inputType="textPassword"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:textColor="#1B5E20"
+                android:textColorHint="#4CAF50"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/editTextCrm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="CRM"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:textColor="#1B5E20"
+                android:textColorHint="#4CAF50"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/editTextEspecialidade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Especialidade"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:textColor="#1B5E20"
+                android:textColorHint="#4CAF50"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnSelecionarDataNascimento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selecionar Data de Nascimento"
+                android:textColor="#1B5E20"
+                android:backgroundTint="#388E3C"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/textViewDataSelecionada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nenhuma data selecionada"
+                android:textColor="#1B5E20"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnCadastrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cadastrar"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1B5E20"
+                android:layout_marginTop="24dp" />
+
+            <Button
+                android:id="@+id/btnVoltar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Voltar"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1B5E20"
+                android:layout_marginTop="28dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#80000000"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieProgress"
+            android:layout_width="333dp"
+            android:layout_height="333dp"
+            app:lottie_rawRes="@raw/loading_animation"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="visible" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salvando dados..."
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp" />
+    </LinearLayout>
+</FrameLayout>

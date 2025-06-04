@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutMedico"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#E8F5E9">
+
+    <TextView
+        android:id="@+id/tvBoasVindas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Olá, Dr(a)."
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1B5E20"
+        android:layout_marginBottom="16dp"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:id="@+id/tvCrm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CRM: "
+        android:textSize="18sp"
+        android:textColor="#1B5E20"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:id="@+id/tvEspecialidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Especialidade: "
+        android:textSize="18sp"
+        android:textColor="#1B5E20"
+        android:layout_marginBottom="24dp"
+        android:textAlignment="viewStart" />
+
+    <EditText
+        android:id="@+id/etBuscarPaciente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email do paciente"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColor="#1B5E20"
+        android:textColorHint="#4CAF50"
+        android:textAlignment="viewStart" />
+
+    <Button
+        android:id="@+id/btnAtribuirPaciente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Atribuir"
+        android:backgroundTint="#1B5E20"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnVerPacientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ver Pacientes"
+        android:backgroundTint="#1B5E20"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnVerAlertas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ver Alertas Ativos"
+        android:backgroundTint="#1B5E20"
+        android:layout_marginTop="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPacientes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnSair"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sair"
+        android:backgroundTint="#1B5E20"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnLogOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:backgroundTint="#D32F2F"
+        android:textColor="@android:color/white" />
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutLoginMedico"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="32dp"
+    android:background="#F0F4FF">
+
+    <TextView
+        android:id="@+id/tvLoginTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login Médico"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#006400"
+        android:layout_marginBottom="32dp" />
+
+    <EditText
+        android:id="@+id/activity_login_medico_nome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nome"
+        android:inputType="textPersonName"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:textColor="#2B4D8C"
+        android:textColorHint="#8FAADC"
+        android:padding="12dp" />
+
+    <EditText
+        android:id="@+id/activity_login_medico_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:textColor="#2B4D8C"
+        android:textColorHint="#8FAADC"
+        android:padding="12dp" />
+
+    <EditText
+        android:id="@+id/activity_login_medico_senha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Senha"
+        android:inputType="textPassword"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="24dp"
+        android:textColor="#2B4D8C"
+        android:textColorHint="#8FAADC"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/activity_login_medico_botao_entrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrar"
+        android:backgroundTint="#006400"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/activity_login_botao_voltar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Voltar"
+        android:backgroundTint="#006400"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp" />
+
+
+    <TextView
+        android:id="@+id/tvCadastrarMedico"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cadastrar"
+        android:textSize="16sp"
+        android:textColor="#006400"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>
