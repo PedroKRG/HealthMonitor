@@ -175,7 +175,7 @@ class InserirDadosActivity : AppCompatActivity() {
 
 
             binding.lottieProgress.cancelAnimation()
-            avaliarEEnviarNotificacao(pressao, glicemia, pacienteId, medicoId)
+            avaliarEEnviarNotificacao(pressao, glicemia, pacienteId, medicoId, dataAtual)
             finish()
         }
     }
@@ -184,7 +184,8 @@ class InserirDadosActivity : AppCompatActivity() {
         pressao: Int,
         glicemia: Int,
         pacienteId: Long,
-        medicoId: Long
+        medicoId: Long,
+        data: String
     ) {
         val mensagens = mutableListOf<String>()
 
@@ -211,7 +212,7 @@ class InserirDadosActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) { registroDao.buscarPacientePorId(pacienteId) }
                 val nomePaciente = paciente?.nome ?: "Paciente"
 
-                val mensagemFinal = "Paciente: $nomePaciente\n" + mensagens.joinToString("\n")
+                val mensagemFinal = "Paciente: $nomePaciente\nData: $data\n" + mensagens.joinToString("\n")
 
 
                 Notificacoes.enviarNotificacao(

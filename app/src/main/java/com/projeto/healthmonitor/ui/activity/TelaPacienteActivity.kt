@@ -92,6 +92,9 @@ class TelaPacienteActivity : AppCompatActivity() {
             val paciente = withContext(Dispatchers.IO) {
                 pacienteDao.buscaPorId(pacienteId)
             }
+            val medico = withContext(Dispatchers.IO) {
+                registroDao.buscarMedicoPorPaciente(pacienteId)
+            }
             paciente?.let {
                 val dataNascimento = LocalDate.parse(it.dataNascimento)
                 val idade = calcularIdade(dataNascimento)
@@ -99,7 +102,13 @@ class TelaPacienteActivity : AppCompatActivity() {
                     tvBoasVindas.text = "Olá, ${it.nome}!"
                     tvEmail.text = "Email: ${it.email}"
                     tvIdade.text = "Idade: $idade"
+                    if (medico != null) {
+                        tvMedico.text = "Médico: ${medico.nome} (${medico.especialidade})"
+                    } else {
+                        tvMedico.text = "Médico: Não associado"
+                    }
                 }
+
             }
         }
     }
